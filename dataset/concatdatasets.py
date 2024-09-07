@@ -35,6 +35,7 @@ class ConcatDataset(Dataset):
         self.classes = self.datasets[0].classes
         self.class_to_idx = dict(zip(self.classes, range(len(self.classes))))
         self.idx_to_class = dict(zip(range(len(self.classes)), self.classes))
+        self.normalize = self.datasets[0].normalize
         for _dataset in self.datasets:
             _dataset.max_len = self.max_len
 

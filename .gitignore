@@ -239,3 +239,12 @@ debug
 viz
 vis
 *.patch
+
+# Model Training files
+*.pth
+screen.txt
+log.txt
+slurm*.out
+finetune_ssl*sh
+pre_train*sh
+evaluate_finetuned.sh

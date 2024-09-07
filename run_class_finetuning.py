@@ -218,7 +218,7 @@ def get_args():
     parser.add_argument('--no_pin_mem', action='store_false', dest='pin_mem')
     parser.set_defaults(pin_mem=True)
     parser.add_argument('--voc_type', type=str, default='ALLCASES_SYMBOLS',
-                        choices=['LOWERCASE', 'ALLCASES', 'ALLCASES_SYMBOLS'])
+                        choices=['LOWERCASE', 'ALLCASES', 'ALLCASES_SYMBOLS', 'CHINESE'])
     parser.add_argument('--max_len', type=int, default=100)
     # parser.add_argument('--num_samples', type=int, default=math.inf)
     parser.add_argument('--num_samples', type=float, default=math.inf)
@@ -498,13 +498,14 @@ def main(args, ds_init):
             model_without_ddp = model.module
 
         # during finetuning, fix some layers.
+        print("encoder layers", num_layers)
         frozen_layers = []
         if args.fixed_encoder_layers > 0:
-            if args.fixed_encoder_layers >= 1:
-                for p_name, p in model_without_ddp.named_parameters():
-                    if 'encoder.patch_embed' in p_name:
-                        p.requires_grad = False
-                        frozen_layers.append(p_name)
+            # if args.fixed_encoder_layers >= 1:
+            for p_name, p in model_without_ddp.named_parameters():
+                if 'encoder.patch_embed' in p_name:
+                    p.requires_grad = False
+                    frozen_layers.append(p_name)
             if args.fixed_encoder_layers > 1:
                 args.fixed_encoder_layers = min(args.fixed_encoder_layers, num_layers + 1)
                 for p_name, p in model_without_ddp.named_parameters():
@@ -608,10 +609,10 @@ def main(args, ds_init):
             print(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc']:.4f}%")
             if max_accuracy < test_stats["acc"]:
                 max_accuracy = test_stats["acc"]
-                if args.output_dir and args.save_ckpt:
-                    utils.save_model(
-                        args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
-                        loss_scaler=loss_scaler, epoch="best", model_ema=model_ema)
+                # if args.output_dir and args.save_ckpt:
+                #     utils.save_model(
+                #         args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
+                #         loss_scaler=loss_scaler, epoch="best", model_ema=model_ema)
 
             print(f'Max accuracy: {max_accuracy:.2f}%')
             if log_writer is not None:

@@ -51,8 +51,8 @@ def get_str_list(output, target, dataset=None):
     targ_list.append(targ_list_i)
 
   # char list to string
-  # if dataset.lowercase:
-  if True:
+  if dataset.normalize:
+  # if True:
     # pred_list = [''.join(pred).lower() for pred in pred_list]
     # targ_list = [''.join(targ).lower() for targ in targ_list]
     pred_list = [_normalize_text(pred) for pred in pred_list]
@@ -75,6 +75,7 @@ def _lexicon_search(lexicon, word):
 
 def Accuracy(output, target, dataset=None):
   pred_list, targ_list = get_str_list(output, target, dataset)
+  # print(pred_list, targ_list)
 
   acc_list = [(pred == targ) for pred, targ in zip(pred_list, targ_list)]
   accuracy = 1.0 * sum(acc_list) / len(acc_list)
